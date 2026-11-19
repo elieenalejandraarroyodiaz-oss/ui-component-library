@@ -1,3 +1,11 @@
-<div class="min-h-screen bg-green-900 flex items-center justify-center">
-  <h1 class="text-4xl font-bold text-lime-300">¡Tailwind funciona!</h1>
+<div class="min-h-screen bg-green-900 flex flex-col items-center justify-center gap-4 p-4">
+  <h1 class="text-3xl font-bold text-lime-300">Clics: {{ clics() }}</h1>
+
+  <div class="flex flex-wrap gap-3">
+    <ui-button label="Primario" variant="primary" (clicked)="sumar()" />
+    <ui-button label="Secundario" variant="secondary" size="lg" (clicked)="sumar()" />
+    <ui-button label="Peligro" variant="danger" size="sm" (clicked)="sumar()" />
+    <ui-button label="Desactivado" [disabled]="true" (clicked)="sumar()" />
+    <ui-button label="Cargando" [loading]="true" (clicked)="sumar()" />
+  </div>
 </div>
