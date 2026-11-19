@@ -1,12 +1,18 @@
-<div class="min-h-screen bg-green-900 flex flex-col items-center justify-center gap-6 p-4">
-  <div class="w-64">
-    <ui-select
-      label="Recurso"
-      [options]="opciones"
-      [(value)]="recurso"
-      (selectionChange)="alCambiar($event)"
-    />
+<div class="min-h-screen bg-green-900 flex flex-col gap-4 p-4">
+  <div class="flex flex-wrap gap-2 text-sm">
+    <button class="rounded bg-lime-400 px-3 py-1" (click)="alternarCarga()">Alternar loading</button>
+    <button class="rounded bg-lime-400 px-3 py-1" (click)="alternarError()">Alternar error</button>
+    <button class="rounded bg-lime-400 px-3 py-1" (click)="vaciar()">Vaciar filas</button>
   </div>
-  <p class="text-lime-300">Valor: {{ recurso() }}</p>
-  <p class="text-lime-300">Último cambio: {{ ultimo() }}</p>
+
+  <ui-table
+    [columns]="columnas"
+    [rows]="filas()"
+    [loading]="cargando()"
+    [errorMessage]="error()"
+    emptyMessage="No se encontraron resultados"
+    (actionTriggered)="alAccionar($event)"
+  />
+
+  <p class="text-lime-300">Última acción: {{ ultima() }}</p>
 </div>
