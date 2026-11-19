@@ -1,0 +1,21 @@
+<div class="flex flex-col gap-1">
+  @if (label()) {
+    <label class="text-sm font-semibold text-lime-300">{{ label() }}</label>
+  }
+
+  @if (loading()) {
+    <div class="h-10 w-full animate-pulse rounded-lg bg-green-800" aria-busy="true"></div>
+  } @else {
+    <select
+      class="rounded-lg border border-green-700 bg-green-950 px-3 py-2 text-slate-100 transition hover:border-lime-400 focus:outline-none focus:ring-2 focus:ring-lime-300 disabled:cursor-not-allowed disabled:opacity-50"
+      [disabled]="disabled()"
+      [value]="value() ?? ''"
+      (change)="onChange($event)"
+    >
+      <option value="" disabled [selected]="value() === null">{{ placeholder() }}</option>
+      @for (opt of options(); track opt.value) {
+        <option [value]="opt.value" [selected]="opt.value === value()">{{ opt.label }}</option>
+      }
+    </select>
+  }
+</div>

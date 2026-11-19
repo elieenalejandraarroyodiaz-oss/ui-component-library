@@ -1,16 +1,22 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { Button } from 'ui-lib';
+import { Select, SelectOption } from 'ui-lib';
 
 @Component({
   selector: 'app-root',
-  imports: [Button],
+  imports: [Select],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  protected readonly clics = signal(0);
+  protected readonly opciones: SelectOption[] = [
+    { label: 'Characters', value: 'character' },
+    { label: 'Episodes', value: 'episode' },
+    { label: 'Locations', value: 'location' },
+  ];
+  protected readonly recurso = signal<string | null>('character');
+  protected readonly ultimo = signal<string>('(nada todavía)');
 
-  protected sumar(): void {
-    this.clics.update((n) => n + 1);
+  protected alCambiar(opt: SelectOption): void {
+    this.ultimo.set(opt.label);
   }
 }
