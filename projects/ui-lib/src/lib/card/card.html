@@ -1,0 +1,18 @@
+<div [class]="classes()">
+  <div
+    class="cursor-pointer border-b border-green-800 px-4 py-3 transition hover:bg-green-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-300"
+    role="button"
+    tabindex="0"
+    (click)="onHeaderClick()"
+    (keydown.enter)="onHeaderClick()"
+  >
+    <h3 class="text-lg font-bold text-lime-300">{{ title() }}</h3>
+    @if (subtitle()) {
+      <p class="text-sm text-slate-400">{{ subtitle() }}</p>
+    }
+  </div>
+
+  <div class="px-4 py-3">
+    <ng-content />
+  </div>
+</div>
