@@ -1,18 +1,19 @@
-<div class="min-h-screen bg-green-900 flex flex-col gap-4 p-4">
-  <div class="flex flex-wrap gap-2 text-sm">
-    <button class="rounded bg-lime-400 px-3 py-1" (click)="alternarCarga()">Alternar loading</button>
-    <button class="rounded bg-lime-400 px-3 py-1" (click)="alternarError()">Alternar error</button>
-    <button class="rounded bg-lime-400 px-3 py-1" (click)="vaciar()">Vaciar filas</button>
+<div class="min-h-screen bg-green-900 p-4 text-lime-300">
+  <p>Recurso: {{ state.resource() }}</p>
+  <p>Cargando: {{ state.loading() }}</p>
+  <p>Error: {{ state.error() }}</p>
+  <p>Registros: {{ state.records().length }}</p>
+
+  <div class="my-3 flex gap-2 text-sm">
+    <button class="rounded bg-lime-400 px-3 py-1 text-green-950" (click)="state.setResource('episode')">Episodios</button>
+    <button class="rounded bg-lime-400 px-3 py-1 text-green-950" (click)="state.setResource('location')">Ubicaciones</button>
+    <button class="rounded bg-lime-400 px-3 py-1 text-green-950" (click)="state.setResource('character')">Personajes</button>
+    <button class="rounded bg-lime-400 px-3 py-1 text-green-950" (click)="state.setStatus('dead')">Solo Dead</button>
   </div>
 
-  <ui-table
-    [columns]="columnas"
-    [rows]="filas()"
-    [loading]="cargando()"
-    [errorMessage]="error()"
-    emptyMessage="No se encontraron resultados"
-    (actionTriggered)="alAccionar($event)"
-  />
-
-  <p class="text-lime-300">Última acción: {{ ultima() }}</p>
+  <ul>
+    @for (r of state.records(); track r.id) {
+      <li>{{ r.name }}</li>
+    }
+  </ul>
 </div>
