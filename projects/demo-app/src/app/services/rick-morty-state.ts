@@ -47,6 +47,11 @@ export class RickMortyState {
     this.load();
   }
 
+  /** Quita un registro del estado local (no llama a la API). */
+  removeRecord(id: number): void {
+    this._records.update((list) => list.filter((r) => r.id !== id));
+  }
+
   /** Consulta la API según el recurso y el filtro actuales. */
   load(): void {
     this.request?.unsubscribe();

@@ -54,8 +54,11 @@ export class App {
   /** Solo los personajes se pueden filtrar por status en la API. */
   protected readonly filterDisabled = computed(() => this.state.resource() !== 'character');
 
-  /** Registro abierto en el modal, o null si está cerrado. */
+  /** Registro abierto en el modal de detalle, o null si está cerrado. */
   protected readonly selected = signal<ApiRecord | null>(null);
+
+  /** Registro pendiente de confirmar para eliminar, o null. */
+  protected readonly pendingDelete = signal<ApiRecord | null>(null);
 
   /** Registro seleccionado, estrechado a cada tipo (null si no corresponde). */
   protected readonly character = computed(() => {
@@ -71,9 +74,6 @@ export class App {
     return r !== null && 'dimension' in r ? r : null;
   });
 
-  /** Temporal: para comprobar la acción de eliminar. */
-  protected readonly lastAction = signal('(nada todavía)');
-
   constructor() {
     this.state.load();
   }
@@ -86,15 +86,28 @@ export class App {
     this.state.setStatus(option.value);
   }
 
+  /** Interpreta la acción emitida por la tabla (la tabla no sabe qué significa). */
   protected onTableAction(event: TableAction<ApiRecord>): void {
     if (event.action === 'view') {
       this.selected.set(event.row);
     } else {
-      this.lastAction.set(`delete → ${event.row.name}`);
+      this.pendingDelete.set(event.row);
     }
   }
 
   protected closeModal(): void {
     this.selected.set(null);
+  }
+
+  protected confirmDelete(): void {
+    const row = this.pendingDelete();
+    if (row) {
+      this.state.removeRecord(row.id);
+    }
+    this.pendingDelete.set(null);
+  }
+
+  protected cancelDelete(): void {
+    this.pendingDelete.set(null);
   }
 }

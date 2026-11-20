@@ -1,13 +1,118 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>DemoApp</title>
-    <base href="/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  </head>
-  <body>
-    <app-root></app-root>
-  </body>
-</html>
+<div class="min-h-screen bg-[#050f08] p-4 text-slate-100 sm:p-8">
+  <h1 class="mb-6 text-3xl font-bold text-lime-300">Rick &amp; Morty Explorer</h1>
+
+  <div class="mb-6 grid gap-4 sm:grid-cols-2">
+    <ui-select
+      label="Recurso"
+      [options]="resourceOptions"
+      [value]="state.resource()"
+      (selectionChange)="onResourceChange($event)"
+    />
+    <ui-select
+      label="Filtro por status"
+      placeholder="Todos"
+      [options]="statusOptions"
+      [value]="state.status()"
+      [disabled]="filterDisabled()"
+      (selectionChange)="onStatusChange($event)"
+    />
+  </div>
+
+  <ui-table
+    [columns]="columns()"
+    [rows]="state.records()"
+    [loading]="state.loading()"
+    [errorMessage]="state.error()"
+    emptyMessage="No se encontraron registros con este filtro"
+    (actionTriggered)="onTableAction($event)"
+  />
+</div>
+
+@if (selected()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+    (click)="closeModal()"
+  >
+    <div class="max-h-[90vh] w-full max-w-md overflow-y-auto" (click)="$event.stopPropagation()">
+      @if (character(); as c) {
+        <ui-card [title]="c.name" [subtitle]="c.status" elevation="outlined">
+          <img [src]="c.image" [alt]="c.name" class="mb-3 h-40 w-40 rounded-lg object-cover" />
+          <dl class="grid grid-cols-[110px_1fr] gap-2 text-sm">
+            <dt class="text-slate-400">ID</dt><dd>{{ c.id }}</dd>
+            <dt class="text-slate-400">Especie</dt><dd>{{ c.species }}</dd>
+            <dt class="text-slate-400">Tipo</dt><dd>{{ c.type || '—' }}</dd>
+            <dt class="text-slate-400">Género</dt><dd>{{ c.gender }}</dd>
+            <dt class="text-slate-400">Origen</dt><dd>{{ c.origin.name }}</dd>
+            <dt class="text-slate-400">Ubicación</dt><dd>{{ c.location.name }}</dd>
+            <dt class="text-slate-400">Episodios</dt><dd>{{ c.episode.length }}</dd>
+            <dt class="text-slate-400">Creado</dt><dd>{{ c.created }}</dd>
+          </dl>
+        </ui-card>
+      }
+
+      @if (episode(); as e) {
+        <ui-card [title]="e.name" [subtitle]="e.episode" elevation="outlined">
+          <dl class="grid grid-cols-[110px_1fr] gap-2 text-sm">
+            <dt class="text-slate-400">ID</dt><dd>{{ e.id }}</dd>
+            <dt class="text-slate-400">Fecha</dt><dd>{{ e.air_date }}</dd>
+            <dt class="text-slate-400">Código</dt><dd>{{ e.episode }}</dd>
+            <dt class="text-slate-400">Personajes</dt><dd>{{ e.characters.length }}</dd>
+            <dt class="text-slate-400">Creado</dt><dd>{{ e.created }}</dd>
+          </dl>
+        </ui-card>
+      }
+
+      @if (location(); as l) {
+        <ui-card [title]="l.name" [subtitle]="l.type" elevation="outlined">
+          <dl class="grid grid-cols-[110px_1fr] gap-2 text-sm">
+            <dt class="text-slate-400">ID</dt><dd>{{ l.id }}</dd>
+            <dt class="text-slate-400">Tipo</dt><dd>{{ l.type }}</dd>
+            <dt class="text-slate-400">Dimensión</dt><dd>{{ l.dimension }}</dd>
+            <dt class="text-slate-400">Residentes</dt><dd>{{ l.residents.length }}</dd>
+            <dt class="text-slate-400">Creado</dt><dd>{{ l.created }}</dd>
+          </dl>
+        </ui-card>
+      }
+
+      <button
+        type="button"
+        class="mt-3 w-full rounded-lg bg-lime-400 px-4 py-2 font-semibold text-green-950 transition hover:bg-lime-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-300"
+        (click)="closeModal()"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+}
+
+@if (pendingDelete(); as row) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="delete-title"
+  >
+    <div class="w-full max-w-sm rounded-xl border-2 border-red-500 bg-green-950 p-5 shadow-lg shadow-black/50">
+      <h2 id="delete-title" class="text-lg font-bold text-red-400">¿Eliminar registro?</h2>
+      <p class="mt-2 text-sm text-slate-300">
+        Vas a quitar <strong class="text-lime-300">{{ row.name }}</strong> de la lista. Esta acción no se puede deshacer.
+      </p>
+      <div class="mt-5 flex justify-end gap-2">
+        <button
+          type="button"
+          class="rounded-lg bg-slate-700 px-4 py-2 font-semibold text-slate-100 transition hover:bg-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          (click)="cancelDelete()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white transition hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
+          (click)="confirmDelete()"
+        >
+          Sí, eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+}
