@@ -1,7 +1,20 @@
-<div class="min-h-screen bg-[#050f08] p-4 text-slate-100 sm:p-8">
-  <h1 class="mb-6 text-3xl font-bold text-lime-300">Rick &amp; Morty Explorer</h1>
+<div
+  class="min-h-screen bg-[#050f08] bg-[radial-gradient(900px_500px_at_85%_-10%,rgba(151,206,76,0.22),transparent_60%)] px-4 py-8 font-sans text-slate-100 sm:px-8 lg:px-12"
+>
+  <header class="mb-8">
+    <h1
+      class="font-display text-4xl tracking-wider text-lime-400 drop-shadow-[0_0_18px_rgba(151,206,76,0.6)] sm:text-5xl"
+    >
+      Rick &amp; Morty Explorer
+    </h1>
+    <p class="mt-1 text-sm text-slate-400 sm:text-base">
+      Explora personajes, episodios y ubicaciones del multiverso
+    </p>
+  </header>
 
-  <div class="mb-6 grid gap-4 sm:grid-cols-2">
+  <section
+    class="mb-6 grid gap-4 rounded-2xl border border-green-800 bg-green-950/60 p-4 shadow-[0_0_30px_rgba(151,206,76,0.12)] sm:grid-cols-2"
+  >
     <ui-select
       label="Recurso"
       [options]="resourceOptions"
@@ -16,7 +29,7 @@
       [disabled]="filterDisabled()"
       (selectionChange)="onStatusChange($event)"
     />
-  </div>
+  </section>
 
   <ui-table
     [columns]="columns()"
@@ -27,7 +40,9 @@
     (actionTriggered)="onTableAction($event)"
   />
 
-  <p class="mt-4 text-lime-300">Última acción: {{ lastAction() }}</p>
+  <footer class="mt-8 text-center text-xs text-slate-500">
+    Datos de la Rick and Morty API · Hecho con Angular y Tailwind
+  </footer>
 </div>
 
 @if (selected()) {
@@ -83,6 +98,38 @@
       >
         Cerrar
       </button>
+    </div>
+  </div>
+}
+
+@if (pendingDelete(); as row) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="delete-title"
+  >
+    <div class="w-full max-w-sm rounded-xl border-2 border-red-500 bg-green-950 p-5 shadow-lg shadow-black/50">
+      <h2 id="delete-title" class="text-lg font-bold text-red-400">¿Eliminar registro?</h2>
+      <p class="mt-2 text-sm text-slate-300">
+        Vas a quitar <strong class="text-lime-300">{{ row.name }}</strong> de la lista. Esta acción no se puede deshacer.
+      </p>
+      <div class="mt-5 flex justify-end gap-2">
+        <button
+          type="button"
+          class="rounded-lg bg-slate-700 px-4 py-2 font-semibold text-slate-100 transition hover:bg-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          (click)="cancelDelete()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white transition hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
+          (click)="confirmDelete()"
+        >
+          Sí, eliminar
+        </button>
+      </div>
     </div>
   </div>
 }
